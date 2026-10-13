@@ -1,0 +1,13 @@
+- name: Kontroller SSH og enhetstype
+  hosts: ios
+  gather_facts: false
+  tasks:
+  - name: Hent modell og IOS versjon
+    cisco.ios.ios_command:
+      commands:
+      - show version
+      - show ip interface brief
+    register: precheck
+  - name: Vis informasjon
+    ansible.builtin.debug:
+      var: precheck.stdout_lines

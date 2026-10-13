@@ -1,0 +1,21 @@
+# Tilpass faktiske portnavn før konsollscriptet kjøres.
+# management brukes av bootstrap; klientnett/DHCP brukes av Ansible.
+device_type: switch
+hostname: SW-MGMT
+domain: nk2.lab
+console_baud: 9600
+management:
+  vlan: 99
+  ip: 10.10.99.11
+  mask: 255.255.255.0
+  gateway: 10.10.99.1
+bootstrap_access_ports:
+- GigabitEthernet1/0/1
+- GigabitEthernet1/0/2
+- GigabitEthernet1/0/3
+trunk_ports: []
+access_ports: []
+routed_switch: true
+test_targets:
+- 10.10.99.1
+- 10.10.99.2
