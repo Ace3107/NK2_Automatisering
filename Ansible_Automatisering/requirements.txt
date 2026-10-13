@@ -1,0 +1,4 @@
+ansible-core>=2.19,<2.20
+ansible-pylibssh>=1.2,<2
+pyserial==3.5
+PyYAML>=6,<7

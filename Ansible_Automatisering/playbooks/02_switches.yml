@@ -1,0 +1,14 @@
+- name: Konfigurer switches
+  hosts: switches
+  gather_facts: false
+  tasks:
+  - name: Ta lokal backup før endringer
+    cisco.ios.ios_config:
+      backup: true
+      backup_options:
+        dir_path: '{{ playbook_dir }}/../backups'
+  - name: Bruk gjenbrukbare oppgaver
+    ansible.builtin.include_tasks: tasks/switch.yml
+  - name: Lagre hvis running config er endret
+    cisco.ios.ios_config:
+      save_when: modified
