@@ -1,12 +1,10 @@
 # Resultater fra faktisk racktest
 
-Status ved opprettelse: **Ikke gjennomført på fysisk utstyr**. Tabellen fylles ut av studenten. Ikke presenter lokale kodekontroller som en racktest.
+Status ved opprettelse: "Ikke gjennomført på fysisk utstyr"
 
-Student: [fyll inn]  
-Dato og rack: [fyll inn]  
-STUD-side og eventuell medstudent: [fyll inn]  
-Git commit testet: [fyll inn]  
-Python, Ansible og collections-versjoner: [fyll inn]
+Student: Amund Holtberget Øverli  
+Rack: pod 8   
+Python, Ansible og collections-versjoner: 
 
 | Enhet | Faktisk modell | IOS-versjon | Avvik fra eksempelporter |
 |---|---|---|---|
