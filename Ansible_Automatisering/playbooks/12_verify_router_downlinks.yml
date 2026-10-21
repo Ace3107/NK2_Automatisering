@@ -1,0 +1,43 @@
+---
+# READ ONLY: preflight before choosing bridge-domain/IRB or routed management.
+# Uses uplink_interface / downlink_interface already defined in hosts.yml.
+- name: Undersok ruterportene for management videre mot SW2
+  hosts: routers
+  gather_facts: false
+  tasks:
+    - name: Kontroller at portvariabler er konfigurert
+      ansible.builtin.assert:
+        that:
+          - uplink_interface is defined
+          - downlink_interface is defined
+        fail_msg: "Definer uplink_interface og downlink_interface i hosts.yml"
+
+    - name: Hent IOS og interface-konfigurasjon (ingen endringer)
+      cisco.ios.ios_command:
+        commands:
+          - show version
+          - show ip interface brief
+          - "show running-config interface {{ uplink_interface }}"
+          - "show running-config interface {{ downlink_interface }}"
+          - show ip route connected
+      register: router_info
+
+    - name: Vis resultat
+      ansible.builtin.debug:
+        msg: "{{ router_info.stdout }}"
+
+    - name: Opprett lokal dokumentasjonsmappe
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../outputs/router_downlinks"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+      become: false
+
+    - name: Lagre kommandoresultat lokalt
+      ansible.builtin.copy:
+        dest: "{{ playbook_dir }}/../outputs/router_downlinks/{{ inventory_hostname }}.txt"
+        content: "{{ router_info.stdout | join('\n\n-----\n\n') }}\n"
+        mode: '0600'
+      delegate_to: localhost
+      become: false
