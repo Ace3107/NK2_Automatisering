@@ -1,0 +1,28 @@
+---
+- name: HSRP for VLAN 10 på nedre ruterporter - kun med godkjenning
+  hosts: routers
+  gather_facts: false
+  tasks:
+    - name: Kontroller godkjenning og IP-plan
+      ansible.builtin.assert:
+        that:
+          - allow_changes | bool
+          - allow_hsrp_changes | bool
+          - downlink_interface is defined
+          - hsrp_ip is defined
+        fail_msg: 'Sjekk downlink_interfaces, VLAN og IP; aktiver allow_changes og allow_hsrp_changes.'
+    - name: Aktiver fysisk nedlink mot SW2
+      cisco.ios.ios_config:
+        parents: "interface {{ downlink_interface }}"
+        lines:
+          - no shutdown
+    - name: Opprett HSRP subinterface VLAN 10
+      cisco.ios.ios_config:
+        parents: "interface {{ downlink_interface }}.{{ client_vlan }}"
+        lines:
+          - "encapsulation dot1Q {{ client_vlan }}"
+          - "ip address {{ hsrp_ip }} {{ client_subnet_mask }}"
+          - "standby {{ hsrp_group }} ip {{ hsrp_virtual_ip }}"
+          - "standby {{ hsrp_group }} priority {{ hsrp_priority }}"
+          - "standby {{ hsrp_group }} preempt"
+    # Avsiktlig ikke 'standby version 2' - støttes ikke konsekvent mellom IOS images.

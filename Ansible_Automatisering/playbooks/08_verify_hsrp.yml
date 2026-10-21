@@ -1,0 +1,14 @@
+---
+- name: Sjekk HSRP uten å endre konfigurasjon
+  hosts: routers
+  gather_facts: false
+  tasks:
+    - name: Les HSRP
+      cisco.ios.ios_command:
+        commands:
+          - show standby brief
+          - show ip interface brief
+      register: state
+    - name: Vis status
+      ansible.builtin.debug:
+        var: state.stdout

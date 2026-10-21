@@ -1,0 +1,35 @@
+---
+- name: SW1 porter for management VLAN 99 (KUN hvis eksplisitt godkjent)
+  hosts: SW1
+  gather_facts: false
+  tasks:
+    - name: Portendringer må godkjennes
+      ansible.builtin.assert:
+        that:
+          - allow_changes | bool
+          - allow_port_changes | bool
+          - switch_trunk_ports | length > 0
+        fail_msg: 'Stoppet: krev allow_changes=true og allow_port_changes=true; kontroller portliste.'
+    - name: Sikre VLAN
+      cisco.ios.ios_config:
+        parents: "vlan {{ mgmt_vlan }}"
+        lines:
+          - name MANAGEMENT
+    - name: Sett management-PC accessport
+      cisco.ios.ios_config:
+        parents: "interface {{ item }}"
+        lines:
+          - switchport mode access
+          - "switchport access vlan {{ mgmt_vlan }}"
+          - spanning-tree portfast
+          - no shutdown
+      loop: "{{ switch_access_ports }}"
+    - name: Tillat management-VLAN på trunk til routerne
+      cisco.ios.ios_config:
+        parents: "interface {{ item }}"
+        lines:
+          - switchport mode trunk
+          - "switchport trunk allowed vlan add {{ mgmt_vlan }}"
+          - no shutdown
+        match: none
+      loop: "{{ switch_trunk_ports }}"

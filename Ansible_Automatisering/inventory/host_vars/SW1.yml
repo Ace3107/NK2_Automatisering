@@ -1,0 +1,7 @@
+# Bekreft portnavn ved: show interfaces status
+switch_trunk_ports:
+  - GigabitEthernet1/0/2
+  - GigabitEthernet1/0/3
+switch_access_ports:
+  - GigabitEthernet1/0/1
+# Behold andre tillatte VLAN; scriptet legger bare VLAN 99 til på trunkene.

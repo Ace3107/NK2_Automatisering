@@ -1,0 +1,26 @@
+---
+- name: Klient-VLAN trunk på SW2/SW3 (ikke kjørt uten bekreftelse)
+  hosts: SW2,SW3
+  gather_facts: false
+  tasks:
+    - name: Verifiser vars og godkjenning
+      ansible.builtin.assert:
+        that:
+          - allow_changes | bool
+          - allow_port_changes | bool
+          - switch_trunk_ports | length > 0
+        fail_msg: 'Definer faktiske switch_trunk_ports i host_vars og godkjenn endringen.'
+    - name: Sikre klient-VLAN
+      cisco.ios.ios_config:
+        parents: "vlan {{ client_vlan }}"
+        lines:
+          - "name STUD2_CLIENT_{{ client_vlan }}"
+    - name: Konfigurer trunkporter (legger til klient-VLAN)
+      cisco.ios.ios_config:
+        parents: "interface {{ item }}"
+        lines:
+          - switchport mode trunk
+          - "switchport trunk allowed vlan add {{ client_vlan }}"
+          - no shutdown
+        match: none
+      loop: "{{ switch_trunk_ports }}"

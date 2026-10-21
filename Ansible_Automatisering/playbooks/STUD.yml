@@ -1,4 +1,0 @@
-- import_playbook: 01_precheck.yml
-- import_playbook: 02_switches.yml
-- import_playbook: 03_routers.yml
-- import_playbook: 05_verify.yml

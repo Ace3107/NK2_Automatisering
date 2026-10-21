@@ -1,0 +1,19 @@
+---
+- name: Hent lesbar dokumentasjon om rack-konfigurasjon
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Les enhetens status
+      cisco.ios.ios_command:
+        commands:
+          - show version
+          - show ip interface brief
+          - show ip route
+      register: detail
+    - name: Lagre status på WSL-PC
+      ansible.builtin.copy:
+        content: "{{ detail.stdout | join('\n\n---\n\n') }}
+"
+        dest: "{{ playbook_dir }}/../outputs/{{ inventory_hostname }}_status.txt"
+        mode: '0600'
+      delegate_to: localhost

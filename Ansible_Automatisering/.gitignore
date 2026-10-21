@@ -1,9 +1,8 @@
-.venv/
+backups/*
+!backups/.gitkeep
+outputs/*
+!outputs/.gitkeep
+*.retry
+*.log
+.vault_pass
 __pycache__/
-*.pyc
-backups/
-results/
-.env
-*.local.yml
-.vault-pass
-*.zip

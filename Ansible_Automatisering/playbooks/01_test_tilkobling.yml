@@ -1,0 +1,15 @@
+---
+- name: Test SSH og hent basisinformasjon (kun lesing)
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Kjør show-kommandoer
+      cisco.ios.ios_command:
+        commands:
+          - show version
+          - show ip interface brief
+          - show ip ssh
+      register: show_info
+    - name: Vis resultat
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ show_info.stdout[1] }}"
