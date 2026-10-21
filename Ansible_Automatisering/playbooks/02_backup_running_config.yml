@@ -1,0 +1,25 @@
+---
+- name: Sikkerhetskopier running-config til WSL (kun lesing)
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Hent running-config
+      cisco.ios.ios_command:
+        commands:
+          - show running-config
+      register: cfg
+      no_log: true
+    - name: Opprett backupmappe lokalt
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/../backups"
+        state: directory
+        mode: '0700'
+      delegate_to: localhost
+    - name: Skriv backup lokalt (inneholder mulige hemmeligheter)
+      ansible.builtin.copy:
+        content: "{{ cfg.stdout[0] }}
+"
+        dest: "{{ playbook_dir }}/../backups/{{ inventory_hostname }}_{{ lookup('pipe', 'date +%Y%m%d_%H%M%S') }}.cfg"
+        mode: '0600'
+      delegate_to: localhost
+      no_log: true

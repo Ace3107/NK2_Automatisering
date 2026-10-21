@@ -1,0 +1,14 @@
+# Oppdater verdier for STUD2 før endrings-playbooks brukes.
+mgmt_vlan: 99
+mgmt_subnet: 10.10.99.0/24
+client_vlan: 10
+client_subnet_mask: 255.255.255.0
+hsrp_virtual_ip: 10.10.10.1
+hsrp_group: 10
+# Deaktiverer alle endrings-playbooks som standard.
+allow_changes: false
+# Ekstra sperre for endringer i fysisk portmodus/trunk.
+allow_port_changes: false
+# Ekstra sperre for HSRP og ruter-subinterface.
+allow_hsrp_changes: false
+# Nedre trunkporter på routere kan kreve klient-VLAN tagging.

@@ -1,0 +1,4 @@
+# VERIFISER navn med show interfaces status. Ikke fyll inn uplink som klientport.
+switch_trunk_ports: []
+switch_access_ports: []
+client_access_ports: []

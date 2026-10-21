@@ -1,0 +1,4 @@
+# VANLIG 2960 bruker ofte GigabitEthernet0/1 og FastEthernet0/x.
+# Disse er plassholdere og MÅ byttes til reelle grensesnitt.
+switch_trunk_ports: []
+switch_access_ports: []

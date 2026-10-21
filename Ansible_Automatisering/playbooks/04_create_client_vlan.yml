@@ -1,0 +1,14 @@
+---
+- name: Opprett klient-VLAN på switcher (endring)
+  hosts: switches
+  gather_facts: false
+  tasks:
+    - name: Krev eksplisitt godkjenning
+      ansible.builtin.assert:
+        that: allow_changes | bool
+        fail_msg: "Stoppet: bruk -e allow_changes=true for å aktivere endringer."
+    - name: Opprett VLAN
+      cisco.ios.ios_config:
+        parents: "vlan {{ client_vlan }}"
+        lines:
+          - "name STUD2_CLIENT_{{ client_vlan }}"

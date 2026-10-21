@@ -1,0 +1,27 @@
+---
+- name: Klientporter på SW3 i VLAN 10, kun eksplisitt godkjent
+  hosts: SW3
+  gather_facts: false
+  tasks:
+    - name: Sikkerhetssperre
+      ansible.builtin.assert:
+        that:
+          - allow_changes | bool
+          - allow_port_changes | bool
+          - client_access_ports is defined
+          - client_access_ports | length > 0
+        fail_msg: 'Angi client_access_ports i host_vars/SW3.yml og gi eksplisitt godkjenning.'
+    - name: Opprett klient-VLAN
+      cisco.ios.ios_config:
+        parents: "vlan {{ client_vlan }}"
+        lines:
+          - "name STUD2_CLIENT_{{ client_vlan }}"
+    - name: Konfigurer dedikerte klientporter
+      cisco.ios.ios_config:
+        parents: "interface {{ item }}"
+        lines:
+          - switchport mode access
+          - "switchport access vlan {{ client_vlan }}"
+          - spanning-tree portfast
+          - no shutdown
+      loop: "{{ client_access_ports }}"

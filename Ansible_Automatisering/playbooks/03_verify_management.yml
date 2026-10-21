@@ -1,0 +1,26 @@
+---
+- name: Verifiser SSH og interface status (kun lesing)
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Sjekk IP og SSH
+      cisco.ios.ios_command:
+        commands:
+          - show ip interface brief
+          - show ip ssh
+          - show running-config | section line vty
+      register: mgmt
+    - name: Skriv status
+      ansible.builtin.debug:
+        var: mgmt.stdout
+    - name: Sjekk switch-trunk (kun switch)
+      cisco.ios.ios_command:
+        commands:
+          - show interfaces trunk
+          - show vlan brief
+      when: inventory_hostname in groups['switches']
+      register: sw_checks
+    - name: Vis trunk og VLAN
+      ansible.builtin.debug:
+        var: sw_checks.stdout
+      when: inventory_hostname in groups['switches']
